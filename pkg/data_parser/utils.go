@@ -3,6 +3,7 @@ package data_parser
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"strings"
 )
@@ -59,7 +60,6 @@ func getPriceOfOneItem(itemId string) (price, error) {
 }
 
 func getAvailabilityOfOneItem(itemId string, countryCode string) (availability, error) {
-	//Todo узнать про страну запроса (для некоторых стран ошибка 500, поэтому такая страна вообще не добавляется в результат)
 	siteUrl := fmt.Sprintf("https://prodservices.waters.com/api/waters/product/v1/availability/%s/%s", itemId, countryCode)
 	body, err := MakeRequest(siteUrl, nil, 0, 0)
 	if err != nil {
@@ -85,12 +85,12 @@ func getAvailabilityOfOneItemFromAllCountries(itemId string, countriesList []str
 	return avlb
 }
 
-func Print(logger *log.Logger, products []product) {
-	for _, el := range products {
-		logger.Printf(StructFormat+"\n", el.Id, el.Title, el.Price.Value, el.Price.Currency, el.Url)
+func Print(out io.Writer, prod []product) {
+	for _, el := range prod {
+		fmt.Fprintf(out, StructFormat+"\n", el.Id, el.Title, el.Price.Value, el.Price.Currency, el.Url)
 		for countryCode, avlbty := range el.Availability {
-			logger.Printf("\tAVAILABLE IN %s:  %v\n", countryCode, avlbty)
+			fmt.Fprintf(out, "\tAVAILABLE IN %s:  %v\n", countryCode, avlbty)
 		}
-		logger.Println()
+		fmt.Println()
 	}
 }

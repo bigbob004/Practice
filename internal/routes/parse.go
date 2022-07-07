@@ -25,7 +25,7 @@ func Parse(w http.ResponseWriter, req *http.Request) {
 		})
 		return
 	}
-	parser.Print(logger, products)
+	parser.Print(os.Stdout, products)
 	w.WriteHeader(http.StatusOK)
 	duration := time.Since(start)
 	logger.Printf("Время работы: %v", duration.Seconds())

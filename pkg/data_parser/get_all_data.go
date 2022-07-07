@@ -28,7 +28,7 @@ func GetAllData(lgr *log.Logger, countriesList []string) ([]product, error) {
 		lgr.Printf("Page %3.d parsing...", i+1)
 		pg, err := getAllItemsFromOnePage(fmt.Sprintf(url, i+1))
 		if err != nil {
-			log.Printf("Error parsing page %d: %v", i, err)
+			lgr.Printf("Error parsing page %d: %v", i, err)
 			continue
 		}
 		for j := 0; j < len(pg.Items); j++ {
@@ -41,7 +41,7 @@ func GetAllData(lgr *log.Logger, countriesList []string) ([]product, error) {
 
 				price, err := getPriceOfOneItem(itemId)
 				if err != nil {
-					log.Printf("Error parsing price of item %s: %v", itemId, err)
+					lgr.Printf("Error parsing price of item %s: %v", itemId, err)
 					return
 				}
 				avlb := getAvailabilityOfOneItemFromAllCountries(itemId, countriesList, lgr)
@@ -55,7 +55,7 @@ func GetAllData(lgr *log.Logger, countriesList []string) ([]product, error) {
 					Price:        price.Val,
 				}
 				if err != nil {
-					log.Printf("Eror while marshaling: %v", err)
+					lgr.Printf("Eror while marshaling: %v", err)
 				} else {
 					products = append(products, product)
 				}
